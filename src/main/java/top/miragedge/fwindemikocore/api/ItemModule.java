@@ -101,8 +101,11 @@ public abstract class ItemModule implements Listener {
     }
 
     /**
-     * 检查 CraftEngine 是否已加载，并验证配置的自定义物品是否存在。
-     * 由主类在插件启用时或定时检查任务中调用。
+     * 检查 CraftEngine 是否已加载。
+     * 由主类在插件启用时调用，仅输出状态日志，不做物品存在性验证。
+     * <p>
+     * 物品存在性改为在运行时通过 {@link #isHoldingValidTool(ItemStack)} 动态检测，
+     * 避免 CraftEngine 版本差异导致的 NoSuchMethodError。
      */
     public void checkCraftEngineLoaded() {
         if (!CraftEngineHelper.isAvailable()) {
@@ -110,11 +113,11 @@ public abstract class ItemModule implements Listener {
             return;
         }
         logger.craftEngineLoaded();
-        CraftEngineHelper.logItemValidation(moduleName, customItemId);
+        logger.info("自定义物品将在运行时动态检测: " + customItemId);
     }
 
     /**
-     * 判断 CraftEngine 是否可用。
+     * 判断 CraftEngine 插件是否可用。
      *
      * @return true 如果 CraftEngine 插件已加载
      */
@@ -124,6 +127,9 @@ public abstract class ItemModule implements Listener {
 
     /**
      * 检查玩家主手是否持有本模块对应的自定义物品。
+     * <p>
+     * 这是运行时检测方法，在玩家触发事件时调用。
+     * 使用 try-catch 包裹，兼容不同版本的 CraftEngine API。
      *
      * @param itemStack 玩家主手的物品
      * @return true 如果持有的是本模块配置的 CraftEngine 自定义物品

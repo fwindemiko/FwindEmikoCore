@@ -2,7 +2,6 @@ package top.miragedge.fwindemikocore.util;
 
 import net.momirealms.craftengine.bukkit.api.CraftEngineItems;
 import net.momirealms.craftengine.core.item.CustomItem;
-import net.momirealms.craftengine.core.util.Key;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -72,24 +71,10 @@ public final class CraftEngineHelper {
     }
 
     /**
-     * 通过物品命名空间ID获取 CraftEngine 自定义物品信息。
-     *
-     * @param itemId 物品命名空间ID，如 "miragedge_items:carrot_pickaxe"
-     * @return CustomItem 对象，如果未找到或 CraftEngine 未加载则返回 null
-     */
-    public static @Nullable CustomItem<ItemStack> getCustomItemById(@NotNull String itemId) {
-        if (!craftEngineAvailable) {
-            return null;
-        }
-        try {
-            return CraftEngineItems.byId(Key.of(itemId));
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    /**
      * 判断物品堆栈是否是指定的 CraftEngine 自定义物品。
+     * <p>
+     * 这是运行时检测的主要方法，在玩家触发事件时调用。
+     * 使用 try-catch 包裹，兼容不同版本的 CraftEngine API。
      *
      * @param itemStack  物品堆栈
      * @param expectedId 期望的物品命名空间ID
@@ -100,7 +85,11 @@ public final class CraftEngineHelper {
         if (customItem == null) {
             return false;
         }
-        return expectedId.equals(customItem.id().toString());
+        try {
+            return expectedId.equals(customItem.id().toString());
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     /**
@@ -128,18 +117,5 @@ public final class CraftEngineHelper {
         }
         plugin.getLogger().severe("[CraftEngine] 物品ID格式错误: " + itemId + "，使用默认值: " + defaultId);
         return defaultId;
-    }
-
-    /**
-     * 验证自定义物品是否在 CraftEngine 中已注册，未找到时输出错误日志。
-     *
-     * @param moduleName 模块名称（用于日志前缀）
-     * @param itemId     要验证的物品ID
-     */
-    public static void logItemValidation(@NotNull String moduleName, @NotNull String itemId) {
-        CustomItem<ItemStack> item = getCustomItemById(itemId);
-        if (item == null) {
-            plugin.getLogger().severe("[" + moduleName + "] 自定义物品加载失败: " + itemId);
-        }
     }
 }

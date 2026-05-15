@@ -124,41 +124,27 @@ public class FwindEmikoCore extends JavaPlugin {
     /**
      * 调度 CraftEngine 加载检查任务。
      * <p>
-     * 如果 CraftEngine 已经加载，立即验证所有模块的物品。
-     * 否则启动定时任务，每2秒检查一次，直到全部加载完成。
+     * 启动定时任务，每2秒检查一次 CraftEngine 是否已加载，
+     * 加载完成后通知所有模块，然后取消任务。
      */
     private void scheduleCraftEngineCheck() {
-        if (CraftEngineHelper.isAvailable()) {
-            for (ItemModule module : modules) {
-                module.checkCraftEngineLoaded();
-            }
-            return;
-        }
-
         for (ItemModule module : modules) {
             getLogger().info("[" + module.getModuleName() + "] 等待CraftEngine加载...");
         }
 
-        Bukkit.getScheduler().runTaskTimer(this, () -> {
+        Bukkit.getScheduler().runTaskTimer(this, task -> {
             CraftEngineHelper.checkAvailability();
             if (!CraftEngineHelper.isAvailable()) {
                 return;
             }
 
-            boolean allLoaded = true;
+            // CraftEngine 已加载，通知所有模块
             for (ItemModule module : modules) {
-                if (!module.isCraftEngineLoaded()) {
-                    module.checkCraftEngineLoaded();
-                }
-                if (!module.isCraftEngineLoaded()) {
-                    allLoaded = false;
-                }
+                module.checkCraftEngineLoaded();
             }
 
-            if (allLoaded) {
-                getLogger().info("[核心] 所有模块 CraftEngine 数据加载完成，停止检查任务");
-                throw new IllegalStateException("取消定时任务");
-            }
+            getLogger().info("[核心] CraftEngine 已加载，所有模块状态已更新");
+            task.cancel();
         }, 20L, 40L);
     }
 
