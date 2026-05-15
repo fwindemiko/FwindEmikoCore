@@ -1,0 +1,39 @@
+# 辛辣之刃 - 武器配置
+# 功能：攻击时概率点燃目标、范围失明，右键可提升攻速
+
+# CraftEngine 物品命名空间ID
+item-id: "miragedge_items:spicy_blade"
+
+# --- 攻击效果 ---
+
+# 点燃概率 (0-100)
+ignite-chance: 80
+
+# 失明效果概率 (0-100)
+blind-chance: 100
+
+# 点燃持续时间（秒）
+ignite-duration: 5
+
+# 减速持续时间（秒）
+speed-reduction-duration: 5
+
+# 失明效果半径（格）
+blind-radius: 3.0
+
+# 失明持续时间（秒）
+blind-duration: 1
+
+# --- 右键攻速技能 ---
+
+# 是否启用攻速提升技能
+attack-speed-skill-enabled: true
+
+# 攻速提升百分比 (0.4 = 40%)
+attack-speed-increase-percent: 0.4
+
+# 攻速提升持续时间（秒）
+attack-speed-duration: 10
+
+# 攻速技能冷却时间（秒）
+attack-speed-cooldown: 18

@@ -1,21 +1,16 @@
-name: FE_ItemsCore
-version: '0.3'
-main: top.miragedge.feitemscore.FE_ItemsCore
+name: FwindEmikoCore
+version: '0.6'
+main: top.miragedge.fwindemikocore.FwindEmikoCore
 api-version: '1.21'
-prefix: FEC
-authors: [ F.windEmiko ]
-description: FE_ItemsCore
-website: miragedge.top
-softdepend:
-  - CraftEngine
-  - PlaceholderAPI
-  - ProtocolLib
+author: F.windEmiko
+depend: [CraftEngine]
+softdepend: [ProtocolLib, PlaceholderAPI]
 commands:
-  fwindemicore:
+  fwindemikocore:
+    description: FwindEmikoCore 主命令
+    usage: /fwindemikocore <info|reload>
     aliases: [fec]
-    description: FE_ItemsCore主命令
-    usage: /<command> [info|reload]
 permissions:
-  fwindemicore.reload:
-    description: 允许重载插件配置
+  fwindemikocore.admin:
+    description: 允许使用重载命令
     default: op
